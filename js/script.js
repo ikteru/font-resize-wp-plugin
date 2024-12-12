@@ -8,14 +8,35 @@ document.addEventListener("DOMContentLoaded", () => {
     const postContent = document.querySelector(".entry-content"); // Post content
     const postHeader = document.querySelector(".wp-block-post-title"); // Post header
 
-    
-    const originalStyles = {
-        fontSize: window.getComputedStyle(postContent).fontSize,
-        color: window.getComputedStyle(postContent).color,
-        fontFamily: window.getComputedStyle(postContent).fontFamily,
-        backgroundColor: window.getComputedStyle(document.body).backgroundColor,
-        headerColor: window.getComputedStyle(postHeader).color,
-        headerFontFamily: window.getComputedStyle(postHeader).fontFamily,
+
+    // Function to capture original styles recursively
+    const captureOriginalStyles = (element) => {
+        const styles = {};
+        styles.element = element;
+        styles.originalStyle = {
+            fontSize: window.getComputedStyle(element).fontSize,
+            color: window.getComputedStyle(element).color,
+            fontFamily: window.getComputedStyle(element).fontFamily,
+            backgroundColor: window.getComputedStyle(element).backgroundColor,
+        };
+
+        // If the element has children, capture their styles as well
+        styles.children = Array.from(element.children).map(captureOriginalStyles);
+        return styles;
+    };
+
+    const originalStyles = captureOriginalStyles(postContent);
+
+    // Function to restore original styles recursively
+    const restoreOriginalStyles = (styles) => {
+        const { element, originalStyle, children } = styles;
+        element.style.fontSize = originalStyle.fontSize;
+        element.style.color = originalStyle.color;
+        element.style.fontFamily = originalStyle.fontFamily;
+        element.style.backgroundColor = originalStyle.backgroundColor;
+
+        // Restore styles for children
+        children.forEach(restoreOriginalStyles);
     };
 
     // Define themes with their respective styles
@@ -46,36 +67,46 @@ document.addEventListener("DOMContentLoaded", () => {
     loadFont("Canela", "https://fonts.googleapis.com/css2?family=Canela:wght@400;700&display=swap");
 
 
-    // Default values
-    const defaultFontSize = "16px";
-    const defaultTheme = "none";
-
     // Persist theme and font size in localStorage
     const savedTheme = localStorage.getItem("theme") || "none";
     const savedFontSize = localStorage.getItem("fontSize") || originalStyles.fontSize;
 
-    // Apply the theme
-    // Apply the theme
     const applyTheme = (theme) => {
         const body = document.body;
-
+    
         if (body && themes[theme]) {
             const { background, color, font } = themes[theme];
-
-            body.style.background = background || originalStyles.backgroundColor;
-            postContent.style.color = postHeader.style.color = color || originalStyles.color;
-            postContent.style.fontFamily = postHeader.style.fontFamily = font || originalStyles.fontFamily;
+    
+            // Apply background to the body
+            body.style.background = background || originalStyles.originalStyle.backgroundColor;
+    
+            // Apply color and font to the post content
+            postContent.style.color = color || originalStyles.originalStyle.color;
+            postContent.style.fontFamily = font || originalStyles.originalStyle.fontFamily;
+    
+            // Apply color to the post header
+            postHeader.style.color = color || originalStyles.originalStyle.headerColor;
+            postHeader.style.fontFamily = font || originalStyles.originalStyle.headerFontFamily;
+    
+            // Apply styles to children of post content
+            Array.from(postContent.children).forEach((child) => {
+                child.style.color = color || originalStyles.originalStyle.color;
+                child.style.fontFamily = font || originalStyles.originalStyle.fontFamily;
+            });
         }
-
+    
         // Highlight the active theme button
         document.querySelectorAll(".themes button").forEach((button) => {
             button.classList.remove("active");
         });
+    
         const activeButton = document.querySelector(
             `.themes button[data-theme="${theme}"]`
         );
-        if (activeButton) activeButton.classList.add("active");
-
+        if (activeButton) {
+            activeButton.classList.add("active");
+        }
+    
         // Save the theme to localStorage
         localStorage.setItem("theme", theme);
     };
@@ -83,23 +114,49 @@ document.addEventListener("DOMContentLoaded", () => {
     // Apply the font size
     const applyFontSize = (fontSize) => {
         postContent.style.fontSize = fontSize;
+
+        // Apply font size to children
+        Array.from(postContent.children).forEach((child) => {
+            child.style.fontSize = fontSize;
+        });
+
         localStorage.setItem("fontSize", fontSize); // Save font size to localStorage
     };
 
 
+
     // Reset everything to the original state
     const resetToDefault = () => {
+        // Clear localStorage for theme and font size
         localStorage.removeItem("theme");
         localStorage.removeItem("fontSize");
-
-        // Restore original styles
-        document.body.style.background = originalStyles.backgroundColor;
-        postContent.style.color = originalStyles.color;
-        postContent.style.fontFamily = originalStyles.fontFamily;
-        postContent.style.fontSize = originalStyles.fontSize;
-        postHeader.style.color = originalStyles.headerColor;
-        postHeader.style.fontFamily = originalStyles.headerFontFamily;
+    
+        // Restore original styles recursively
+        restoreOriginalStyles(originalStyles);
+    
+        // Restore post header styles
+        postHeader.style.color = originalStyles.originalStyle.headerColor;
+        postHeader.style.fontFamily = originalStyles.originalStyle.headerFontFamily;
+    
+        // Explicitly set the theme to "none" to reset the state
+        const noneButton = document.querySelector(`button[data-theme="none"]`);
+        if (noneButton) {
+            noneButton.disabled = true; // Re-disable the "none" button
+            noneButton.style.opacity = 0.3;
+            noneButton.classList.add("active"); // Mark it as active
+        }
+    
+        // Clear active state on other theme buttons
+        document.querySelectorAll(".themes button").forEach((button) => {
+            if (button.dataset.theme !== "none") {
+                button.classList.remove("active");
+            }
+        });
+    
+        // Clear applied styles on the body
+        document.body.style.background = originalStyles.originalStyle.backgroundColor;
     };
+
 
 
     // Render the theme buttons dynamically
@@ -116,7 +173,7 @@ document.addEventListener("DOMContentLoaded", () => {
             if (theme === "none") {
                 button.innerHTML = `<span style="font-size: 20px; color: gray;">🚫</span>`;
                 button.disabled = true; // Disable "None" by default
-                button.style.opacity = 0.5; // Style to indicate it's disabled
+                button.style.opacity = 0.3; // Style to indicate it's disabled
             } else {
                 button.innerHTML = `
                     <div style="font-size: 20px;">Aa</div>
