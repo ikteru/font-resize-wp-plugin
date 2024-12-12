@@ -118,3 +118,13 @@
 #theme-settings .font-size button:hover {
     background-color: #f0f0f0;
 }
+
+.themes button:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+.themes button.active {
+    border: 2px solid #007acc;
+    opacity: 1;
+}

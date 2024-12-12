@@ -36,13 +36,10 @@ const applyTheme = (theme) => {
     if (body && themes[theme]) {
         const { background, color, font, fontWeight, fontSize } = themes[theme];
 
+        // Reset or apply styles based on the selected theme
         body.style.background = background || "";
-
         postContent.style.color = postHeader.style.color = color || "";
         postContent.style.fontFamily = postHeader.style.fontFamily = font || "inherit";
-
-        postContent.style.fontFamily = postHeader.style.fontFamily = font || "inherit";
-
         postContent.style.fontWeight = fontWeight || "normal";
         postContent.style.fontSize = fontSize || "inherit";
     }
@@ -55,21 +52,31 @@ const applyTheme = (theme) => {
         `.themes button[data-theme="${theme}"]`
     );
     if (activeButton) activeButton.classList.add("active");
+
+    // Handle the "None" button state
+    const noneButton = document.querySelector(`button[data-theme="none"]`);
+    if (theme === "none" && noneButton) {
+        noneButton.disabled = true;
+        noneButton.style.opacity = 0.5; // Disable and indicate it's inactive
+    }
 };
 
 // Render the theme buttons dynamically
+// Render the theme buttons dynamically
 const renderThemeButtons = () => {
     const themeContainer = document.querySelector(".themes");
+
     Object.keys(themes).forEach((theme) => {
         const { background, color, font } = themes[theme];
-        loadFont(font);
 
         const button = document.createElement("button");
         button.dataset.theme = theme;
-        
-        // Add the "None" icon and label
+
+        // Add the "None" button with a default disabled state
         if (theme === "none") {
             button.innerHTML = `<span style="font-size: 20px; color: gray;">🚫</span>`;
+            button.disabled = true; // Disable "None" by default
+            button.style.opacity = 0.5; // Style to indicate it's disabled
         } else {
             button.innerHTML = `
                 <div style="font-size: 20px;">Aa</div>
@@ -80,7 +87,17 @@ const renderThemeButtons = () => {
             button.style.fontFamily = font;
         }
 
-        button.addEventListener("click", () => applyTheme(theme));
+        button.addEventListener("click", () => {
+            applyTheme(theme);
+
+            // Enable the "None" button once a theme is applied
+            const noneButton = document.querySelector(`button[data-theme="none"]`);
+            if (theme !== "none" && noneButton) {
+                noneButton.disabled = false;
+                noneButton.style.opacity = 1;
+            }
+        });
+
         themeContainer.appendChild(button);
     });
 };
