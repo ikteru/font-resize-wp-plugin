@@ -1,4 +1,9 @@
 document.addEventListener("DOMContentLoaded", () => {
+    // Check if we're on a single post page
+    if (!document.body.classList.contains("single-post")) {
+        return; // Exit if not on a single post
+    }
+
     // Define themes with their respective styles
     const themes = {
         none: { background: null, color: null, font: null },
