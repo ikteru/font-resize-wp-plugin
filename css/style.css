@@ -1,22 +1,25 @@
+
+
 /* Modal container */
 #font-size-modal {
     position: fixed;
-    top: 20px;
-    right: 20px;
+    top: 200px;
+    right: 0;
     z-index: 1000;
     font-family: Arial, sans-serif;
 }
 
 /* Toggle button */
-#font-size-toggle {
-    background: rgba(0, 0, 0, 0.8); /* Semi-transparent dark background */
-    color: #ffffff; /* White text */
+#theme-btn {
+    background: #EBE7D7; /* Semi-transparent dark background */
+    color: #333333; /* White text */
+    font-family: 'Charter', Times, serif;
     border: none;
-    width: 40px; /* Square button */
-    height: 40px;
-    font-size: 14px;
+    width: 67px; /* Square button */
+    height: 45px;
+    font-size: 22px;
     font-weight: bold;
-    border-radius: 8px; /* Rounded corners */
+    border-radius: 10px 0 0 10px; /* Rounded corners */
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -25,26 +28,27 @@
     transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
-#font-size-toggle:hover {
+#theme-btn:hover {
     background-color: rgba(50, 50, 50, 0.9);
+    color: #EBE7D7;
     transform: scale(1.1);
 }
 
 /* Modal settings container */
-#font-size-settings {
+#theme-settings {
     position: absolute;
-    top: 50px;
+    top: 60px;
     right: 0;
-    background: #ffffff;
-    border-radius: 10px;
-    padding: 15px;
+    background: #EBE7D7;
+    border-radius: 10px 0 0 10px;
+    padding: 14px 48px 14px 14px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     width: 250px;
     display: none; /* Initially hidden */
 }
 
 /* Modal title */
-#font-size-settings h3 {
+#theme-settings h3 {
     margin: 0 0 15px;
     font-size: 16px;
     font-weight: bold;
@@ -52,7 +56,7 @@
 }
 
 /* Themes grid */
-#font-size-settings .themes {
+#theme-settings .themes {
     display: grid;
     grid-template-columns: repeat(3, 1fr); /* 3 buttons per row */
     gap: 10px;
@@ -60,7 +64,7 @@
 }
 
 /* Theme button */
-#font-size-settings .themes button {
+#theme-settings .themes button {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -76,30 +80,30 @@
     font-family: inherit;
 }
 
-#font-size-settings .themes button:hover {
+#theme-settings .themes button:hover {
     transform: translateY(-2px);
     background-color: #f0f0f0;
 }
 
-#font-size-settings .themes button .theme-name {
+#theme-settings .themes button .theme-name {
     margin-top: 5px;
     font-size: 12px;
 }
 
 /* Highlight active theme */
-#font-size-settings .themes button.active {
+#theme-settings .themes button.active {
     border-color: #007acc;
     box-shadow: 0 0 4px rgba(0, 122, 204, 0.5);
 }
 
 /* Font size section */
-#font-size-settings .font-size {
+#theme-settings .font-size {
     display: flex;
     justify-content: space-between; /* A+ and A- share the row */
     gap: 5px;
 }
 
-#font-size-settings .font-size button {
+#theme-settings .font-size button {
     width: 50%; /* Fill 50% of the row */
     padding: 10px;
     border: 1px solid #ddd;
@@ -111,6 +115,6 @@
     transition: background-color 0.3s ease;
 }
 
-#font-size-settings .font-size button:hover {
+#theme-settings .font-size button:hover {
     background-color: #f0f0f0;
 }

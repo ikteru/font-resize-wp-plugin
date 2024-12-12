@@ -1,63 +1,50 @@
+// Define themes with their respective styles
 const themes = {
-    original: {
-        background: "#ffffff",
-        color: "#000000",
-        font: "'Arial', sans-serif",
-    },
-    bold: {
-        background: "#ffffff",
-        color: "#000000",
-        fontWeight: "bold",
-        font: "'Verdana', sans-serif",
-    },
-    calm: {
-        background: "#faf3e0",
-        color: "#5b4636",
-        font: "'Georgia', serif",
-    },
-    quiet: {
-        background: "#333333",
-        color: "#ffffff",
-        font: "'Courier New', monospace",
-    },
-    paper: {
-        background: "#f3f3f3",
-        color: "#000000",
-        font: "'Times New Roman', serif",
-    },
-    focus: {
-        background: "#ffffff",
-        color: "#000000",
-        font: "'Roboto', sans-serif",
-        fontSize: "18px",
-    },
+    original: { background: "#ffffff", color: "#000000", font: "inherit", fontSize: "16px" }, // Default browser font
+    quiet: { background: "#4A4A4D", color: "#EBEBF4", font: "'Publico', serif", fontSize: "17px" },
+    paper: { background: "#EEEDED", color: "#303030", font: "'Charter', serif", fontSize: "16px" },
+    bold: { background: "#ffffff", color: "#1C1C1E", font: "'San Francisco Bold', sans-serif", fontSize: "18px", fontWeight: "bold" },
+    calm: { background: "#EEE2CB", color: "#302D28", font: "'Canela', serif", fontSize: "17px" },
+    focus: { background: "#FFFCF5", color: "#333231", font: "'Proxima Nova', sans-serif", fontSize: "18px" },
 };
 
-// Dynamically load Google Fonts
-const loadFont = (font) => {
-    const fontName = font.replace(/['"]/g, "").split(",")[0].trim();
+// Load fonts dynamically (Google Fonts or custom sources)
+const loadFont = (fontName, url) => {
     if (!document.getElementById(`font-${fontName}`)) {
         const link = document.createElement("link");
         link.id = `font-${fontName}`;
         link.rel = "stylesheet";
-        link.href = `https://fonts.googleapis.com/css2?family=${fontName.replace(
-            / /g,
-            "+"
-        )}:wght@400;700&display=swap`;
+        link.href = url;
         document.head.appendChild(link);
     }
 };
+
+// Load specified fonts
+loadFont("Proxima Nova", "https://fonts.googleapis.com/css2?family=Proxima+Nova:wght@400;700&display=swap");
+loadFont("Publico", "https://fonts.googleapis.com/css2?family=Publico:wght@400;700&display=swap");
+loadFont("Charter", "https://fonts.googleapis.com/css2?family=Charter:wght@400;700&display=swap");
+loadFont("Canela", "https://fonts.googleapis.com/css2?family=Canela:wght@400;700&display=swap");
+
+
+// Target the specific elements
+const postContent = document.querySelector(".entry-content"); // Post content
+const postHeader = document.querySelector(".wp-block-post-title"); // Post header
 
 // Apply the selected theme globally
 const applyTheme = (theme) => {
     const body = document.body;
     if (body && themes[theme]) {
         const { background, color, font, fontWeight, fontSize } = themes[theme];
+
         body.style.background = background || "";
-        body.style.color = color || "";
-        body.style.fontFamily = font || "inherit";
-        body.style.fontWeight = fontWeight || "normal";
-        body.style.fontSize = fontSize || "inherit";
+
+        postContent.style.color = postHeader.style.color = color || "";
+        postContent.style.fontFamily = postHeader.style.fontFamily = font || "inherit";
+
+        postContent.style.fontFamily = postHeader.style.fontFamily = font || "inherit";
+
+        postContent.style.fontWeight = fontWeight || "normal";
+        postContent.style.fontSize = fontSize || "inherit";
     }
 
     // Highlight the active theme button
@@ -95,36 +82,36 @@ document.addEventListener("DOMContentLoaded", () => {
     const modal = document.createElement("div");
     modal.id = "font-size-modal";
     modal.innerHTML = `
-        <button id="font-size-toggle">aA</button>
-        <div id="font-size-settings">
+        <button id="theme-btn">Aa</button>
+        <div id="theme-settings">
             <h3>Themes & Settings</h3>
             <div class="themes"></div>
             <div class="font-size">
-                <button id="increase-font">A+</button>
                 <button id="decrease-font">A-</button>
+                <button id="increase-font">A+</button>
             </div>
         </div>
     `;
     document.body.appendChild(modal);
 
-    const toggleButton = document.getElementById("font-size-toggle");
-    const settings = document.getElementById("font-size-settings");
+    const themeToggleBtn = document.getElementById("theme-btn");
+    const themeSettings = document.getElementById("theme-settings");
 
-    toggleButton.addEventListener("click", () => {
-        settings.style.display =
-            settings.style.display === "block" ? "none" : "block";
+    themeToggleBtn.addEventListener("click", () => {
+        themeSettings.style.display =
+            themeSettings.style.display === "block" ? "none" : "block";
     });
 
     document.getElementById("increase-font").addEventListener("click", () => {
-        const content = document.body;
-        const currentSize = parseInt(window.getComputedStyle(content).fontSize);
-        content.style.fontSize = `${currentSize + 2}px`;
+
+        const currentSize = parseInt(window.getComputedStyle(postContent).fontSize);
+        postContent.style.fontSize = `${currentSize + 2}px`;
+
     });
 
     document.getElementById("decrease-font").addEventListener("click", () => {
-        const content = document.body;
-        const currentSize = parseInt(window.getComputedStyle(content).fontSize);
-        content.style.fontSize = `${currentSize - 2}px`;
+        const currentSize = parseInt(window.getComputedStyle(postContent).fontSize);
+        postContent.style.fontSize = `${currentSize - 2}px`;
     });
 
     renderThemeButtons();
