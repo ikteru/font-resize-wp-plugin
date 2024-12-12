@@ -1,10 +1,9 @@
 <?php
 /**
- * Plugin Name: Font Size Control
+ * Plugin Name: Font Size Controller
  * Description: A plugin to adjust font sizes and themes dynamically.
- * Version: 1.0.0
- * Author: Your Name
- * License: GPL2+
+ * Version: 1.3.0
+ * Author: Shiro Kageyomi
  */
 
 // Prevent direct access.
