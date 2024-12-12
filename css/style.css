@@ -103,20 +103,32 @@
     gap: 5px;
 }
 
-#theme-settings .font-size button {
-    width: 50%; /* Fill 50% of the row */
+#theme-settings .font-size button,
+#reset-defaults button {
     padding: 10px;
     border: 1px solid #ddd;
     border-radius: 5px;
     cursor: pointer;
     font-size: 14px;
-    background: #ffffff;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     transition: background-color 0.3s ease;
 }
 
-#theme-settings .font-size button:hover {
+#theme-settings .font-size button {
+    width: 50%; /* Fill 50% of the row */
+    background: #ffffff;
+}
+
+#reset-defaults button {
+    width: 100%;
+    background: #ffffff;
+    opacity: 0.5;
+}
+
+#theme-settings .font-size button:hover,
+#reset-defaults button:hover {
     background-color: #f0f0f0;
+    transform: translateY(-2px);
 }
 
 .themes button:disabled {
@@ -128,3 +140,4 @@
     border: 2px solid #007acc;
     opacity: 1;
 }
+

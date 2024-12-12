@@ -30,11 +30,15 @@ document.addEventListener("DOMContentLoaded", () => {
     const postContent = document.querySelector(".entry-content"); // Post content
     const postHeader = document.querySelector(".wp-block-post-title"); // Post header
 
-    // Persist theme and font size in localStorage
-    const savedTheme = localStorage.getItem("theme") || "none";
-    const savedFontSize = localStorage.getItem("fontSize") || "16px";
+    // Default values
+    const defaultFontSize = "16px";
+    const defaultTheme = "none";
 
-    // Apply the saved theme and font size
+    // Persist theme and font size in localStorage
+    const savedTheme = localStorage.getItem("theme") || defaultTheme;
+    const savedFontSize = localStorage.getItem("fontSize") || defaultFontSize;
+
+    // Apply the theme
     const applyTheme = (theme) => {
         const body = document.body;
 
@@ -59,9 +63,19 @@ document.addEventListener("DOMContentLoaded", () => {
         localStorage.setItem("theme", theme);
     };
 
+    // Apply the font size
     const applyFontSize = (fontSize) => {
         postContent.style.fontSize = fontSize;
         localStorage.setItem("fontSize", fontSize); // Save font size to localStorage
+    };
+
+    // Reset everything to defaults
+    const resetToDefault = () => {
+        localStorage.removeItem("theme");
+        localStorage.removeItem("fontSize");
+
+        applyTheme(defaultTheme);
+        applyFontSize(defaultFontSize);
     };
 
     // Render the theme buttons dynamically
@@ -102,6 +116,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
             themeContainer.appendChild(button);
         });
+
+        // Add the "Reset to Default" button
+        const resetButton = document.createElement("button");
+        resetButton.id = "reset-default";
+        resetButton.textContent = "Reset to Default";
+
+        resetButton.addEventListener("click", resetToDefault);
+
+        const resetToDefaultsDiv = document.querySelector("#reset-defaults");
+        resetToDefaultsDiv.appendChild(resetButton);
     };
 
     // Initialize the font size and theme buttons
@@ -129,10 +153,16 @@ document.addEventListener("DOMContentLoaded", () => {
         <button id="theme-btn">Aa</button>
         <div id="theme-settings">
             <h3>Themes & Settings</h3>
+
+            <hr style="margin-bottom: 15px; opacity: 0.5">
+            
             <div class="themes"></div>
             <div class="font-size">
                 <button id="decrease-font">A-</button>
                 <button id="increase-font">A+</button>
+            </div>
+            <hr style="margin-top: 15px; opacity:0.5;">
+            <div id="reset-defaults">
             </div>
         </div>
     `;
