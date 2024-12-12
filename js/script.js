@@ -1,6 +1,6 @@
 // Define themes with their respective styles
 const themes = {
-    original: { background: "#ffffff", color: "#000000", font: "inherit", fontSize: "16px" }, // Default browser font
+    none: { background: null, color: null, font: null, fontSize: null, fontWeight: null },
     quiet: { background: "#4A4A4D", color: "#EBEBF4", font: "'Publico', serif", fontSize: "17px" },
     paper: { background: "#EEEDED", color: "#303030", font: "'Charter', serif", fontSize: "16px" },
     bold: { background: "#ffffff", color: "#1C1C1E", font: "'San Francisco Bold', sans-serif", fontSize: "18px", fontWeight: "bold" },
@@ -66,13 +66,20 @@ const renderThemeButtons = () => {
 
         const button = document.createElement("button");
         button.dataset.theme = theme;
-        button.style.background = background;
-        button.style.color = color;
-        button.style.fontFamily = font;
-        button.innerHTML = `
-            <div style="font-size: 20px;">Aa</div>
-            <div class="theme-name">${theme.charAt(0).toUpperCase() + theme.slice(1)}</div>
-        `;
+        
+        // Add the "None" icon and label
+        if (theme === "none") {
+            button.innerHTML = `<span style="font-size: 20px; color: gray;">🚫</span>`;
+        } else {
+            button.innerHTML = `
+                <div style="font-size: 20px;">Aa</div>
+                <div class="theme-name">${theme.charAt(0).toUpperCase() + theme.slice(1)}</div>
+            `;
+            button.style.background = background;
+            button.style.color = color;
+            button.style.fontFamily = font;
+        }
+
         button.addEventListener("click", () => applyTheme(theme));
         themeContainer.appendChild(button);
     });
