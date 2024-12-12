@@ -1,3 +1,4 @@
+/* Modal container */
 #font-size-modal {
     position: fixed;
     top: 20px;
@@ -6,34 +7,110 @@
     font-family: Arial, sans-serif;
 }
 
+/* Toggle button */
 #font-size-toggle {
-    background: rgba(0, 0, 0, 0.8);
-    color: #fff;
+    background: rgba(0, 0, 0, 0.8); /* Semi-transparent dark background */
+    color: #ffffff; /* White text */
     border: none;
-    width: 40px;
+    width: 40px; /* Square button */
     height: 40px;
     font-size: 14px;
     font-weight: bold;
-    border-radius: 8px;
+    border-radius: 8px; /* Rounded corners */
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: background-color 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
 #font-size-toggle:hover {
     background-color: rgba(50, 50, 50, 0.9);
+    transform: scale(1.1);
 }
 
+/* Modal settings container */
 #font-size-settings {
     position: absolute;
     top: 50px;
     right: 0;
-    background: #fff;
-    border-radius: 8px;
+    background: #ffffff;
+    border-radius: 10px;
     padding: 15px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     width: 250px;
-    display: none;
+    display: none; /* Initially hidden */
+}
+
+/* Modal title */
+#font-size-settings h3 {
+    margin: 0 0 15px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #333333;
+}
+
+/* Themes grid */
+#font-size-settings .themes {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* 3 buttons per row */
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+/* Theme button */
+#font-size-settings .themes button {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 12px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease, background-color 0.3s ease;
+    font-family: inherit;
+}
+
+#font-size-settings .themes button:hover {
+    transform: translateY(-2px);
+    background-color: #f0f0f0;
+}
+
+#font-size-settings .themes button .theme-name {
+    margin-top: 5px;
+    font-size: 12px;
+}
+
+/* Highlight active theme */
+#font-size-settings .themes button.active {
+    border-color: #007acc;
+    box-shadow: 0 0 4px rgba(0, 122, 204, 0.5);
+}
+
+/* Font size section */
+#font-size-settings .font-size {
+    display: flex;
+    justify-content: space-between; /* A+ and A- share the row */
+    gap: 5px;
+}
+
+#font-size-settings .font-size button {
+    width: 50%; /* Fill 50% of the row */
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    background: #ffffff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease;
+}
+
+#font-size-settings .font-size button:hover {
+    background-color: #f0f0f0;
 }
