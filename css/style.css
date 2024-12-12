@@ -145,7 +145,6 @@
 
 
 /* FOR NOW, HIDE THE EXTRA FUNCTIONALITY OF THE THEMES UNTIL THEY'RE REFINED */
-
 .themes {
     display: none !important;
 }
@@ -153,4 +152,4 @@
 /* Hide the reset to defaults button */
 #reset-defaults {
     display: none !important;
-}
+} 

@@ -4,6 +4,20 @@ document.addEventListener("DOMContentLoaded", () => {
         return; // Exit if not on a single post
     }
 
+    // Target the specific elements
+    const postContent = document.querySelector(".entry-content"); // Post content
+    const postHeader = document.querySelector(".wp-block-post-title"); // Post header
+
+    
+    const originalStyles = {
+        fontSize: window.getComputedStyle(postContent).fontSize,
+        color: window.getComputedStyle(postContent).color,
+        fontFamily: window.getComputedStyle(postContent).fontFamily,
+        backgroundColor: window.getComputedStyle(document.body).backgroundColor,
+        headerColor: window.getComputedStyle(postHeader).color,
+        headerFontFamily: window.getComputedStyle(postHeader).fontFamily,
+    };
+
     // Define themes with their respective styles
     const themes = {
         none: { background: null, color: null, font: null },
@@ -31,18 +45,16 @@ document.addEventListener("DOMContentLoaded", () => {
     loadFont("Charter", "https://fonts.googleapis.com/css2?family=Charter:wght@400;700&display=swap");
     loadFont("Canela", "https://fonts.googleapis.com/css2?family=Canela:wght@400;700&display=swap");
 
-    // Target the specific elements
-    const postContent = document.querySelector(".entry-content"); // Post content
-    const postHeader = document.querySelector(".wp-block-post-title"); // Post header
 
     // Default values
     const defaultFontSize = "16px";
     const defaultTheme = "none";
 
     // Persist theme and font size in localStorage
-    const savedTheme = localStorage.getItem("theme") || defaultTheme;
-    const savedFontSize = localStorage.getItem("fontSize") || defaultFontSize;
+    const savedTheme = localStorage.getItem("theme") || "none";
+    const savedFontSize = localStorage.getItem("fontSize") || originalStyles.fontSize;
 
+    // Apply the theme
     // Apply the theme
     const applyTheme = (theme) => {
         const body = document.body;
@@ -50,9 +62,9 @@ document.addEventListener("DOMContentLoaded", () => {
         if (body && themes[theme]) {
             const { background, color, font } = themes[theme];
 
-            body.style.background = background || "";
-            postContent.style.color = postHeader.style.color = color || "";
-            postContent.style.fontFamily = postHeader.style.fontFamily = font || "inherit";
+            body.style.background = background || originalStyles.backgroundColor;
+            postContent.style.color = postHeader.style.color = color || originalStyles.color;
+            postContent.style.fontFamily = postHeader.style.fontFamily = font || originalStyles.fontFamily;
         }
 
         // Highlight the active theme button
@@ -74,14 +86,21 @@ document.addEventListener("DOMContentLoaded", () => {
         localStorage.setItem("fontSize", fontSize); // Save font size to localStorage
     };
 
-    // Reset everything to defaults
+
+    // Reset everything to the original state
     const resetToDefault = () => {
         localStorage.removeItem("theme");
         localStorage.removeItem("fontSize");
 
-        applyTheme(defaultTheme);
-        applyFontSize(defaultFontSize);
+        // Restore original styles
+        document.body.style.background = originalStyles.backgroundColor;
+        postContent.style.color = originalStyles.color;
+        postContent.style.fontFamily = originalStyles.fontFamily;
+        postContent.style.fontSize = originalStyles.fontSize;
+        postHeader.style.color = originalStyles.headerColor;
+        postHeader.style.fontFamily = originalStyles.headerFontFamily;
     };
+
 
     // Render the theme buttons dynamically
     const renderThemeButtons = () => {
