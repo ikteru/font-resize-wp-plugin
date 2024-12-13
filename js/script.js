@@ -40,50 +40,114 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Define themes with their respective styles
     const themes = {
-        none: { background: null, color: null, font: null },
-        quiet: { background: "#4A4A4D", color: "#EBEBF4", font: "'Publico', serif" },
-        paper: { background: "#EEEDED", color: "#303030", font: "'Charter', serif" },
-        bold: { background: "#ffffff", color: "#1C1C1E", font: "'San Francisco Bold', sans-serif" },
-        calm: { background: "#EEE2CB", color: "#302D28", font: "'Canela', serif" },
-        focus: { background: "#FFFCF5", color: "#333231", font: "'Proxima Nova', sans-serif" },
+        none: { background: null, color: null, font: null, pullquoteBg: null },
+        quiet: { background: "#4A4A4D", color: "#EBEBF4", font: "'Publico', serif", pullquoteBg: "#5A5A5D" },
+        paper: { background: "#EEEDED", color: "#303030", font: "'Charter', serif", pullquoteBg: "#D6D6D6" },
+        bold: { background: "#ffffff", color: "#1C1C1E", font: "'San Francisco Bold', sans-serif", pullquoteBg: "#F0F0F0" },
+        calm: { background: "#EEE2CB", color: "#302D28", font: "'Canela', serif", pullquoteBg: "#D2C8B5" },
+        focus: { background: "#FFFCF5", color: "#333231", font: "'Proxima Nova', sans-serif", pullquoteBg: "#EDE6D6" },
     };
 
-    // Apply the theme only when explicitly activated by the user
+
     const applyTheme = (theme) => {
         const body = document.body;
-
-        if (body && themes[theme]) {
-            const { background, color, font } = themes[theme];
-
-            body.style.background = background || "";
-            postContent.style.color = color || "";
-            postContent.style.fontFamily = font || "inherit";
-
-            // Apply styles to children of post content
-            Array.from(postContent.children).forEach((child) => {
-                child.style.color = color || "";
-                child.style.fontFamily = font || "";
+    
+        if (theme === "none") {
+            // Reset styles for pullquotes
+            document.querySelectorAll(".wp-block-pullquote").forEach((pullquote) => {
+                pullquote.style.removeProperty("background-color");
+                pullquote.style.removeProperty("color");
+    
+                pullquote.querySelectorAll("blockquote, p").forEach((innerText) => {
+                    innerText.style.removeProperty("background-color");
+                    innerText.style.removeProperty("color");
+                });
             });
-
-            // Apply styles to the header
-            postHeader.style.color = color || "";
-            postHeader.style.fontFamily = font || "inherit";
+    
+            // Reset styles for standalone blockquotes
+            document.querySelectorAll("blockquote:not(.wp-block-pullquote)").forEach((blockquote) => {
+                blockquote.style.removeProperty("background-color");
+                blockquote.style.removeProperty("color");
+    
+                blockquote.querySelectorAll("p").forEach((innerText) => {
+                    innerText.style.removeProperty("background-color");
+                    innerText.style.removeProperty("color");
+                });
+            });
+    
+            // Reset post content styles
+            postContent.style.removeProperty("color");
+            postContent.style.removeProperty("font-family");
+    
+            // Reset post header styles
+            postHeader.style.removeProperty("color");
+            postHeader.style.removeProperty("font-family");
+    
+            // Reset body background
+            body.style.removeProperty("background");
+    
+            // Save the reset state
+            localStorage.setItem("theme", "none");
+    
+            // Highlight the "none" button
+            document.querySelectorAll(".themes button").forEach((button) => {
+                button.classList.remove("active");
+            });
+            const noneButton = document.querySelector(`.themes button[data-theme="none"]`);
+            if (noneButton) noneButton.classList.add("active");
+    
+            return;
         }
-
-        // Highlight the active theme button
-        document.querySelectorAll(".themes button").forEach((button) => {
-            button.classList.remove("active");
-        });
-
-        const activeButton = document.querySelector(
-            `.themes button[data-theme="${theme}"]`
-        );
-        if (activeButton) {
-            activeButton.classList.add("active");
+    
+        // Apply theme-specific styles
+        if (body && themes[theme]) {
+            const { background, color, font, pullquoteBg } = themes[theme];
+    
+            // Apply body background
+            body.style.setProperty("background", background || "", "important");
+    
+            // Apply post content styles
+            postContent.style.setProperty("color", color || "", "important");
+            postContent.style.setProperty("font-family", font || "inherit", "important");
+    
+            // Apply post header styles
+            postHeader.style.setProperty("color", color || "", "important");
+            postHeader.style.setProperty("font-family", font || "inherit", "important");
+    
+            // Update pullquote container and text
+            document.querySelectorAll(".wp-block-pullquote").forEach((pullquote) => {
+                pullquote.style.setProperty("background-color", pullquoteBg || "", "important");
+                pullquote.style.setProperty("color", color || "", "important");
+    
+                pullquote.querySelectorAll("blockquote, p").forEach((innerText) => {
+                    innerText.style.setProperty("background-color", "transparent", "important");
+                    innerText.style.setProperty("color", color || "", "important");
+                });
+            });
+    
+            // Update standalone blockquote styling
+            document.querySelectorAll("blockquote:not(.wp-block-pullquote)").forEach((blockquote) => {
+                blockquote.style.setProperty("background-color", pullquoteBg || "", "important");
+                blockquote.style.setProperty("color", color || "", "important");
+    
+                blockquote.querySelectorAll("p").forEach((innerText) => {
+                    innerText.style.setProperty("background-color", "transparent", "important");
+                    innerText.style.setProperty("color", color || "", "important");
+                });
+            });
+    
+            // Save the theme to localStorage
+            localStorage.setItem("theme", theme);
+    
+            // Highlight the active theme button
+            document.querySelectorAll(".themes button").forEach((button) => {
+                button.classList.remove("active");
+            });
+            const activeButton = document.querySelector(
+                `.themes button[data-theme="${theme}"]`
+            );
+            if (activeButton) activeButton.classList.add("active");
         }
-
-        // Save the theme to localStorage
-        localStorage.setItem("theme", theme);
     };
 
     // Apply font size changes only when explicitly modified by the user
@@ -98,31 +162,39 @@ document.addEventListener("DOMContentLoaded", () => {
         localStorage.setItem("fontSize", fontSize); // Save font size to localStorage
     };
 
-    // Reset everything to the original state
     const resetToDefault = () => {
+        // Remove theme and font size from localStorage
         localStorage.removeItem("theme");
         localStorage.removeItem("fontSize");
-
+    
         // Restore original styles recursively
         restoreOriginalStyles(originalStyles);
-
-        // Explicitly set the theme to "none" to reset the state
-        const noneButton = document.querySelector(`button[data-theme="none"]`);
-        if (noneButton) {
-            noneButton.disabled = true; // Re-disable the "none" button
-            noneButton.style.opacity = 0.3;
-            noneButton.classList.add("active"); // Mark it as active
-        }
-
-        // Clear active state on other theme buttons
-        document.querySelectorAll(".themes button").forEach((button) => {
-            if (button.dataset.theme !== "none") {
-                button.classList.remove("active");
-            }
+    
+        // Reset pullquote styles to their original state
+        document.querySelectorAll(".wp-block-pullquote").forEach((pullquote) => {
+            pullquote.style.removeProperty("background-color");
+            pullquote.style.removeProperty("color");
+    
+            pullquote.querySelectorAll("blockquote, p").forEach((innerText) => {
+                innerText.style.removeProperty("background-color");
+                innerText.style.removeProperty("color");
+            });
         });
-
-        // Clear applied styles on the body
-        document.body.style.background = originalStyles.originalStyle.backgroundColor;
+    
+        // Reset standalone blockquote styles to their original state
+        document.querySelectorAll("blockquote:not(.wp-block-pullquote)").forEach((blockquote) => {
+            blockquote.style.removeProperty("background-color");
+            blockquote.style.removeProperty("color");
+    
+            // Reset text inside standalone blockquote
+            blockquote.querySelectorAll("p").forEach((innerText) => {
+                innerText.style.removeProperty("background-color");
+                innerText.style.removeProperty("color");
+            });
+        });
+    
+        // Reset body background color
+        document.body.style.removeProperty("background");
     };
 
     // Render the theme buttons dynamically
