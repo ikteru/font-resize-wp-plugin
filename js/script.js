@@ -8,7 +8,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const postContent = document.querySelector(".entry-content"); // Post content
     const postHeader = document.querySelector(".wp-block-post-title"); // Post header
 
-
     // Function to capture original styles recursively
     const captureOriginalStyles = (element) => {
         const styles = {};
@@ -49,69 +48,45 @@ document.addEventListener("DOMContentLoaded", () => {
         focus: { background: "#FFFCF5", color: "#333231", font: "'Proxima Nova', sans-serif" },
     };
 
-    // Load fonts dynamically (Google Fonts or custom sources)
-    const loadFont = (fontName, url) => {
-        if (!document.getElementById(`font-${fontName}`)) {
-            const link = document.createElement("link");
-            link.id = `font-${fontName}`;
-            link.rel = "stylesheet";
-            link.href = url;
-            document.head.appendChild(link);
-        }
-    };
-
-    // Load specified fonts
-    loadFont("Proxima Nova", "https://fonts.googleapis.com/css2?family=Proxima+Nova:wght@400;700&display=swap");
-    loadFont("Publico", "https://fonts.googleapis.com/css2?family=Publico:wght@400;700&display=swap");
-    loadFont("Charter", "https://fonts.googleapis.com/css2?family=Charter:wght@400;700&display=swap");
-    loadFont("Canela", "https://fonts.googleapis.com/css2?family=Canela:wght@400;700&display=swap");
-
-
-    // Persist theme and font size in localStorage
-    const savedTheme = localStorage.getItem("theme") || "none";
-    const savedFontSize = localStorage.getItem("fontSize") || originalStyles.fontSize;
-
+    // Apply the theme only when explicitly activated by the user
     const applyTheme = (theme) => {
         const body = document.body;
-    
+
         if (body && themes[theme]) {
             const { background, color, font } = themes[theme];
-    
-            // Apply background to the body
-            body.style.background = background || originalStyles.originalStyle.backgroundColor;
-    
-            // Apply color and font to the post content
-            postContent.style.color = color || originalStyles.originalStyle.color;
-            postContent.style.fontFamily = font || originalStyles.originalStyle.fontFamily;
-    
-            // Apply color to the post header
-            postHeader.style.color = color || originalStyles.originalStyle.headerColor;
-            postHeader.style.fontFamily = font || originalStyles.originalStyle.headerFontFamily;
-    
+
+            body.style.background = background || "";
+            postContent.style.color = color || "";
+            postContent.style.fontFamily = font || "inherit";
+
             // Apply styles to children of post content
             Array.from(postContent.children).forEach((child) => {
-                child.style.color = color || originalStyles.originalStyle.color;
-                child.style.fontFamily = font || originalStyles.originalStyle.fontFamily;
+                child.style.color = color || "";
+                child.style.fontFamily = font || "";
             });
+
+            // Apply styles to the header
+            postHeader.style.color = color || "";
+            postHeader.style.fontFamily = font || "inherit";
         }
-    
+
         // Highlight the active theme button
         document.querySelectorAll(".themes button").forEach((button) => {
             button.classList.remove("active");
         });
-    
+
         const activeButton = document.querySelector(
             `.themes button[data-theme="${theme}"]`
         );
         if (activeButton) {
             activeButton.classList.add("active");
         }
-    
+
         // Save the theme to localStorage
         localStorage.setItem("theme", theme);
     };
 
-    // Apply the font size
+    // Apply font size changes only when explicitly modified by the user
     const applyFontSize = (fontSize) => {
         postContent.style.fontSize = fontSize;
 
@@ -123,21 +98,14 @@ document.addEventListener("DOMContentLoaded", () => {
         localStorage.setItem("fontSize", fontSize); // Save font size to localStorage
     };
 
-
-
     // Reset everything to the original state
     const resetToDefault = () => {
-        // Clear localStorage for theme and font size
         localStorage.removeItem("theme");
         localStorage.removeItem("fontSize");
-    
+
         // Restore original styles recursively
         restoreOriginalStyles(originalStyles);
-    
-        // Restore post header styles
-        postHeader.style.color = originalStyles.originalStyle.headerColor;
-        postHeader.style.fontFamily = originalStyles.originalStyle.headerFontFamily;
-    
+
         // Explicitly set the theme to "none" to reset the state
         const noneButton = document.querySelector(`button[data-theme="none"]`);
         if (noneButton) {
@@ -145,19 +113,17 @@ document.addEventListener("DOMContentLoaded", () => {
             noneButton.style.opacity = 0.3;
             noneButton.classList.add("active"); // Mark it as active
         }
-    
+
         // Clear active state on other theme buttons
         document.querySelectorAll(".themes button").forEach((button) => {
             if (button.dataset.theme !== "none") {
                 button.classList.remove("active");
             }
         });
-    
+
         // Clear applied styles on the body
         document.body.style.background = originalStyles.originalStyle.backgroundColor;
     };
-
-
 
     // Render the theme buttons dynamically
     const renderThemeButtons = () => {
@@ -223,8 +189,11 @@ document.addEventListener("DOMContentLoaded", () => {
             applyFontSize(newSize);
         });
 
-        // Apply the saved font size on load
-        applyFontSize(savedFontSize);
+        // Do not apply saved font size on load, only when changed
+        const savedFontSize = localStorage.getItem("fontSize");
+        if (savedFontSize) {
+            applyFontSize(savedFontSize);
+        }
     };
 
     // Add the modal and controls
@@ -238,11 +207,14 @@ document.addEventListener("DOMContentLoaded", () => {
             <hr style="margin-bottom: 15px; opacity: 0.5">
             
             <div class="themes"></div>
+
+
+            <hr style="margin-top: 15px; opacity:0.5;">
+
             <div class="font-size">
                 <button id="decrease-font">A-</button>
                 <button id="increase-font">A+</button>
             </div>
-            <hr style="margin-top: 15px; opacity:0.5;">
             <div id="reset-defaults">
             </div>
         </div>
@@ -260,5 +232,4 @@ document.addEventListener("DOMContentLoaded", () => {
     // Render buttons and apply saved settings
     renderThemeButtons();
     initFontControls();
-    applyTheme(savedTheme);
 });
